@@ -22,15 +22,15 @@ import com.relevantcodes.extentreports.ExtentReports;
 import com.relevantcodes.extentreports.ExtentTest;
 import com.relevantcodes.extentreports.LogStatus;
 import com.training.generics.ScreenShot;
+import com.training.pom.AdminCategoryPOM;
 import com.training.pom.AdminFilterPOM;
-import com.training.pom.UniformPOM;
 import com.training.utility.DriverFactory;
 import com.training.utility.DriverNames;
 
-public class AdminFilterTest {
+public class AdminCategoryTest {
 	private WebDriver driver;
 	private String baseUrl;
-	private AdminFilterPOM adminfilterPOM;
+	private AdminCategoryPOM admincategoryPOM;
 	private static Properties properties;
 	private ScreenShot screenShot; 
 	ExtentReports extent;
@@ -39,7 +39,7 @@ public class AdminFilterTest {
 	@BeforeTest
 	public void extentreport()
 	{
-		extent=new ExtentReports(System.getProperty("user.dir")+"/test-output/Adminfilter.html",true);
+		extent=new ExtentReports(System.getProperty("user.dir")+"/test-output/AdminCategory.html",true);
 		extent.loadConfig(new File(System.getProperty("user.dir")+"\\extent-config.xml"));
 	}
 	@BeforeClass
@@ -53,7 +53,7 @@ public class AdminFilterTest {
 	@BeforeMethod
 	public void setUp() throws Exception {
 		driver = DriverFactory.getDriver(DriverNames.CHROME);
-		adminfilterPOM = new AdminFilterPOM(driver); 
+		admincategoryPOM = new AdminCategoryPOM(driver); 
 		baseUrl = properties.getProperty("baseURL");
 		screenShot = new ScreenShot(driver); 
 		// open the browser 
@@ -68,47 +68,56 @@ public class AdminFilterTest {
 	@Test
 	public void validLoginTest() throws InterruptedException {
 		
-		logger=extent.startTest("AdminFilterTest");
-		adminfilterPOM.sendusername("admin");
-		adminfilterPOM.sendPassword("admin@123");
-		adminfilterPOM.clickLoginBtn(); 
+		logger=extent.startTest("AdminCategoryTest");
+		admincategoryPOM.sendusername("admin");
+		admincategoryPOM.sendPassword("admin@123");
+		admincategoryPOM.clickLoginBtn(); 
 		logger.log(LogStatus.PASS, "Application opened");
 		String title=driver.getTitle();
 		logger.log(LogStatus.PASS, title);
-		adminfilterPOM.clickReports();
-		logger.log(LogStatus.PASS, "Reports opened succesfully");
-		screenShot.captureScreenShot("Reports");
+		admincategoryPOM.clickCatalog();
+		logger.log(LogStatus.PASS, "Clicked on Catalog");
+		
+		logger.log(LogStatus.PASS, "Catalogs opened succesfully and options link should get dispalyed in the list");
+		screenShot.captureScreenShot("Catalog");
 		Thread.sleep(3000);
-		adminfilterPOM.clickSales();
-		logger.log(LogStatus.PASS, "Sales opened succesfully");
+		
+		admincategoryPOM.clickCategory();
+		logger.log(LogStatus.PASS, "Clicked on Category");
+		Thread.sleep(3000);
+		admincategoryPOM.clickAddNew();
+		Thread.sleep(3000);
+		logger.log(LogStatus.PASS, "Clicked on AddNew");
+		admincategoryPOM.sendname("Blazers(3-5)");
+		Thread.sleep(3000);
+		admincategoryPOM.senddescription("Blazers for students");
+		Thread.sleep(3000);
+		admincategoryPOM.sendmetatag("BLZ 03");
+		Thread.sleep(3000);
+		screenShot.captureScreenShot("Metatag");
+		admincategoryPOM.sendmetatagd("Blazers for primary class students");
+		Thread.sleep(3000);
+		admincategoryPOM.clickdata();
+		Thread.sleep(3000);
+		logger.log(LogStatus.PASS, "Clicked on Data tab");
+		admincategoryPOM.sendparent("Parent Value");
+		Thread.sleep(3000);
+		screenShot.captureScreenShot("Parent");
+		admincategoryPOM.clickDesign();
+		Thread.sleep(3000);
+		logger.log(LogStatus.PASS, "Clicked on Design tab");
+		admincategoryPOM.clickLayout();
+		Select D=new Select(driver.findElement(By.xpath("//*[@class='form-control' and @name='category_layout[0]']")));
+		D.selectByVisibleText("Home");
+		System.out.println(D);
+		admincategoryPOM.clickSave();
+		Thread.sleep(3000);
+		screenShot.captureScreenShot("Save");
 		extent.endTest(logger);
 		extent.flush();
 		extent.close();
 		
-		screenShot.captureScreenShot("Sales");
-		WebDriverWait mywait1=new WebDriverWait(driver,10);
-		mywait1.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@class='collapse in']/li[1]/a[1]")));
-		adminfilterPOM.clickOrders();
-		Thread.sleep(3000);
-		adminfilterPOM.clickGroupby();
-		screenShot.captureScreenShot();
-		Select Groupby=new Select(driver.findElement(By.xpath("//*[@class='form-control' and @id='input-group']")));
-		List<WebElement> data = Groupby.getOptions();
-		System.out.println(data.size());
-		for (int i=0; i<data.size(); i++)
-			
-		{	
-		System.out.println(data.get(i).getText());
-		}
-		Groupby.selectByIndex(3);
-
-		screenShot.captureScreenShot();
-		adminfilterPOM.clickFilter();
-		logger.log(LogStatus.PASS, "Filter clicked succesfully");
 		
-		screenShot.captureScreenShot("Filter");
-		 
-			
 		
 	}
 }
